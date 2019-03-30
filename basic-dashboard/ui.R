@@ -1,28 +1,88 @@
 ## ui.R ##
 library(shiny)
 library(shinydashboard)
+library(dplyr)
+library(plotly)
+library(DT)
 
-ui <- dashboardPage(skin="green",
-                    dashboardHeader(title = "Basic dashboard"),
-                    dashboardSidebar(sidebarMenu(
-                      menuItem("CSAT", tabName = "CSAT", icon = icon("star")),
-                      menuItem("Word Cloud", icon = icon("cloud"), tabName = "WordCloud"),
-                      menuItem("Demographics", icon = icon("users"), tabName = "Demographics"),
-                      menuItem("Search", icon = icon("search"), tabName = "Search")
-                    )),
-                    dashboardBody(
-                      tabItems(
-                        tabItem(tabName = "CSAT",
-                                h2("CSAT tab content")
-                        ),
-                        tabItem(tabName = "WordCloud",
-                                h2("Word Cloud tab content")
-                        ),
-                        tabItem(tabName = "Demographics",
-                                h2("Demographics tab content")
-                        ),
-                        tabItem(tabName = "Search",
-                                h2("Search tab content")
-                        )
-                      ))
-)
+
+ui_header <- dashboardHeader(title = "Basic dashboard")
+
+ui_sidebar <- dashboardSidebar(
+                sidebarMenu(menuItem("Charts", tabName = "Plotly", icon = icon("star")),
+                            menuItem("Tables", tabName = "DataTable", icon = icon("dashboard")),
+                            menuItem("Maps", tabName = "Maps", icon = icon("cloud")),
+                            menuItem("All", tabName = "Together", icon = icon("users"))
+                )
+              )
+
+ui_body <- dashboardBody(
+            tabItems(
+              tabItem(
+                tabName = "Plotly",
+                h2("Ploty Charts"),
+                fluidRow(box(width = 12,
+                             plotlyOutput("plotly_line")))
+                ),
+              tabItem(
+                tabName = "DataTable",
+                h2("DataTable"),
+                fluidRow(box(width = 12,
+                             dataTableOutput("data_table")))
+                ),
+              tabItem(
+                tabName = "Maps",
+                h2("Maps"),
+                fluidRow(box(width = 12))
+                ),
+              tabItem(
+                tabName = "Together",
+                h2("All Together"),
+                fluidRow(box(width = 12))
+                )
+            )
+          )
+
+
+
+# ui <- dashboardPage(skin="green",
+#                     dashboardHeader(title = "Basic dashboard"),
+#                     dashboardSidebar(
+#                       sidebarMenu(menuItem("Charts", tabName = "Plotly", icon = icon("star")),
+#                                   menuItem("Tables", tabName = "DataTable", icon = icon("dashboard")),
+#                                   menuItem("Maps", tabName = "Maps", icon = icon("cloud")),
+#                                   menuItem("All", tabName = "Together", icon = icon("users"))
+#                       )
+#                     ),
+#                     dashboardBody(
+#                       tabItems(
+#                         tabItem(
+#                           tabName = "Plotly",
+#                           h2("Ploty Charts"),
+#                           fluidRow(box(width = 12,
+#                                        plotlyOutput("plotly_line")))
+#                         ),
+#                         tabItem(
+#                           tabName = "DataTable",
+#                           h2("DataTable"),
+#                           fluidRow(box(width = 12,
+#                                        dataTableOutput("data_table")))
+#                         ),
+#                         tabItem(
+#                           tabName = "Maps",
+#                           h2("Maps"),
+#                           fluidRow(box(width = 12
+#                                        ))
+#                         ),
+#                         tabItem(
+#                           tabName = "Together",
+#                           h2("All Together"),
+#                           fluidRow(box(width = 12
+#                                        ))
+#                         )
+#                       )
+#                     )
+# )
+
+
+ui <- dashboardPage(skin = "green", ui_header, ui_sidebar, ui_body)
