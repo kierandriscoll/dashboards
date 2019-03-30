@@ -29,5 +29,9 @@ output$data_table <- renderDataTable(mtcars %>%
   
   
 #### Code for the Together tab #### 
+
+
+
+
   
   }
