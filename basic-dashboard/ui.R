@@ -85,6 +85,15 @@ ui_body <- dashboardBody(
                                                           width = "50%",
                                                           choices = c("Option 1", "Option 2", "Option 3")
                       ))
+                  ),
+                  
+                  box(width = 12,
+                      solidHeader = TRUE,
+                      status = "primary",
+                      title = "Plotly Bar",
+                      
+                      plotly::plotlyOutput(outputId = "plotly_bar") %>%
+                        shinycssloaders::withSpinner(type = 7)
                   )
                 )
               )

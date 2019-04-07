@@ -9,17 +9,17 @@ output$plotly_line <- plotly::renderPlotly({
   
   req(input$plotly_select_input)
   
-  filtered <- mtcars %>%
-              filter(carb == input$plotly_select_input)
+  df <- mtcars %>%
+        filter(carb == input$plotly_select_input)
   
-  filtered %>%
-  plotly::plot_ly(x = ~mpg,
+  plotly::plot_ly(data = df,
+                  x = ~mpg,
                   y = ~disp,
                   color = ~gear,
                   type = "scatter",
                   mode = "markers",
                   hoverinfo = "text",
-                  hovertext = paste("MPG: ", filtered$mpg, "<br>Disp: ", filtered$disp)
+                  hovertext = paste("MPG: ", df$mpg, "<br>Disp: ", df$disp)
   ) %>%
   plotly::layout(title = "mpg vs. disp",
                  xaxis = list(showgrid = FALSE),
@@ -70,6 +70,7 @@ output$plotly_time <- plotly::renderPlotly({
 
 # DataTable #
 output$data_table <- DT::renderDT({
+  
   mtcars %>%
   DT::datatable(selection = "single",
                 options = list(lengthMenu = c(10, 20, 30))
@@ -126,6 +127,33 @@ observeEvent(input$sidebar_menu, {
  
 })  
 
+
+# Scatter/Line chart #  
+output$plotly_bar <- plotly::renderPlotly({
+  
+  df <- txhousing %>%
+        filter(year == 2015) %>%
+        group_by(city) %>%
+        summarise(total_sales = sum(sales),
+                  total_volume = sum(volume),
+                  avg_price = round(sum(volume) / sum(sales), -3) ) %>%
+        ungroup()
+  
+  plotly::plot_ly(data = df,
+                  y = ~city,
+                  x = ~avg_price,
+                  type = "bar",
+                  hoverinfo = "text",
+                  hovertext = paste("Total Sales: ", df$total_sales,
+                                    "<br>Average Price: £", df$avg_price)
+  ) %>%
+  plotly::layout(title = "Texas : Average House Sale Price",
+                 xaxis = list(showgrid = FALSE),
+                 yaxis = list(showgrid = TRUE),
+                 margin = list(l = 130)
+  ) %>%
+  plotly::config(displayModeBar = F)   
+})
 
 
 #### if need to split server code into modules ####
