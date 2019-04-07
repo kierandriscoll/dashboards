@@ -1,60 +1,107 @@
 ## server.R ##
 
 server <- function(input, output) { 
-  
-#### Code for the Plotly tab #### 
-output$plotly_line <- renderPlotly({
+ 
+#### Code for the Plotly tab ####
 
+# Scatter/Line chart #  
+output$plotly_line <- plotly::renderPlotly({
+  
+  req(input$plotly_select_input)
+  
   filtered <- mtcars %>%
               filter(carb == input$plotly_select_input)
   
   filtered %>%
-  plot_ly(x = ~mpg,
-          y = ~disp,
-          color = ~gear,
-          type = "scatter",
-          mode = "markers",
-          hoverinfo = "text",
-          hovertext = paste("MPG: ", filtered$mpg, "<br>Disp: ", filtered$disp)
-          ) %>%
-  layout(title = "mpg vs. disp",
-         xaxis = list(showgrid = FALSE),
-         yaxis = list(showgrid = TRUE)
-         ) %>%
-  config(displayModeBar = F)   
+  plotly::plot_ly(x = ~mpg,
+                  y = ~disp,
+                  color = ~gear,
+                  type = "scatter",
+                  mode = "markers",
+                  hoverinfo = "text",
+                  hovertext = paste("MPG: ", filtered$mpg, "<br>Disp: ", filtered$disp)
+  ) %>%
+  plotly::layout(title = "mpg vs. disp",
+                 xaxis = list(showgrid = FALSE),
+                 yaxis = list(showgrid = TRUE)
+  ) %>%
+  plotly::config(displayModeBar = F)   
 })
 
 
-
+# Drop Down Box #
 output$plotly_select <- renderUI({
   selectizeInput(inputId = "plotly_select_input",
                  width = "50%",
-                 label = "Select",
+                 label = "Select carburetors",
                  choices = unique(mtcars$carb),
                  selected = 4
-                 )   
+  )   
 })  
-  
-  
-#### Code for the DataTable tab #### 
-output$data_table <- renderDataTable({
-  mtcars %>%
-  DT::datatable(selection = "single",
-                options = list(lengthMenu = c(10, 20, 30))
-                ) %>%
-  formatStyle("mpg",
-              background = styleColorBar(c(min(mtcars$mpg), max(mtcars$mpg)), "red"),
-              backgroundSize = "98% 88%",
-              backgroundRepeat = "no-repeat",
-              backgroundPosition = "center" 
-              )  
+
+
+# Time Series chart #  
+output$plotly_time <- plotly::renderPlotly({
+
+  plotly::plot_ly(data = ggplot2::economics,
+                  x = ~date,
+                  y = ~unemploy,
+                  type = "scatter",
+                  mode = "lines",
+                  hoverinfo = "text",
+                  hovertext = paste("Date: ", format(economics$date, "%d-%b-%Y"),
+                                    "<br>Unemp: ", economics$unemploy)
+  ) %>%
+  plotly::layout(title = "US Unemployment",
+                 xaxis = list(title = "Date",
+                              showgrid = FALSE,
+                              rangeslider = list(type = "date")),
+                 yaxis = list(title = "Unemployment, 000's",
+                              range = c(0, max(economics$unemploy)),
+                              showgrid = TRUE)
+  ) %>%
+  plotly::config(displayModeBar = F)   
 })
 
 
-observeEvent(input$data_table_rows_selected, {
-  row <- input$data_table_rows_selected  
-})  
   
+  
+#### Code for the DataTable tab ####
+
+# DataTable #
+output$data_table <- DT::renderDT({
+  mtcars %>%
+  DT::datatable(selection = "single",
+                options = list(lengthMenu = c(10, 20, 30))
+  ) %>%
+  DT::formatStyle("mpg",
+                  background = styleColorBar(c(min(mtcars$mpg), max(mtcars$mpg)), "red"),
+                  backgroundSize = "98% 88%",
+                  backgroundRepeat = "no-repeat",
+                  backgroundPosition = "center" 
+  )  
+})
+
+
+# Text from DataTable #
+output$text_data_table <- renderUI({
+
+  x <- input$data_table_rows_selected  # Nb. DT automatically creates various interactive inputs
+  
+  if (length(x) == 0) {  
+    HTML("Click on a row in the table")
+  }
+  else {
+    HTML(paste("You have selected", rownames(mtcars[x,]),
+               "<br> It does ", mtcars[x,"mpg"], " mpg.",
+               "<br> It has ", mtcars[x,"cyl"], " cylinders.",
+               "<br> It has ", mtcars[x,"gear"], " gears.",
+               "<br> It has ", mtcars[x,"hp"], " horsepower.",
+               "<br> It weighs ", mtcars[x,"wt"]*1000, " pounds."
+    ))     
+  }
+    
+})
   
 #### Code for the Maps tab #### 
   
@@ -63,6 +110,21 @@ observeEvent(input$data_table_rows_selected, {
   
   
 #### Code for the Together tab #### 
+
+# Observer#
+# test <- reactiveValues(data_table_observe = "")
+ 
+observeEvent(input$sidebar_menu, {
+  
+  if (input$sidebar_menu == "Plotly") {
+    shinyjs::hide(id = "date_range")
+  } 
+  
+  else {
+    shinyjs::show(id = "date_range")
+  }
+ 
+})  
 
 
 
