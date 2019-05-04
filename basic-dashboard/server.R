@@ -40,7 +40,7 @@ output$plotly_select <- renderUI({
 })  
 
 
-# Time Series chart #  
+# Plotly Time Series chart #  
 output$plotly_time <- plotly::renderPlotly({
 
   plotly::plot_ly(data = ggplot2::economics,
@@ -61,6 +61,33 @@ output$plotly_time <- plotly::renderPlotly({
                               showgrid = TRUE)
   ) %>%
   plotly::config(displayModeBar = F)   
+})
+
+
+
+# Dygraph Time Series chart #  
+output$dygraph_time <- dygraphs::renderDygraph({
+  
+  # Click event : extract date 
+  date_clicked <- ifelse(is.null(input$dygraph_time_click$x) == TRUE,
+                         "2999-01-01",
+                         strftime(input$dygraph_time_click$x, format="%Y-%m-%d")) # 
+  
+  # Convert to XTS
+  xts_data <- xts::xts(select(ggplot2::economics, unemploy), order.by = ggplot2::economics$date)  
+
+  # Draw chart
+  dygraphs::dygraph(xts_data) %>%
+  dySeries("unemploy",
+           label = "Unemployment",
+           strokeWidth = 4,
+           color = "#3c8dbc") %>%
+  dyAxis("x", drawGrid =FALSE) %>%
+  dyAxis("y", drawGrid = TRUE, axisLineColor = "white" ) %>%
+  dyLegend(width = 130, show = "follow", labelsSeparateLines = TRUE) %>%
+  dyRangeSelector() %>%
+  dyEvent(date_clicked)
+        
 })
 
 

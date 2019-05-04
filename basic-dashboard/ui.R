@@ -8,6 +8,8 @@ library(shinyjs)
 library(dplyr)
 library(ggplot2)
 library(plotly)
+library(dygraphs)
+library(xts)
 library(DT)
 
 
@@ -58,6 +60,22 @@ ui_body <- dashboardBody(
                       plotly::plotlyOutput(outputId = "plotly_time") %>%
                       shinycssloaders::withSpinner(type = 7)
                   )
+                ),
+                fluidRow(
+                  box(width = 6,
+                      solidHeader = TRUE,
+                      status = "primary"
+                      
+                  ),
+                  
+                  box(width = 6,
+                      solidHeader = TRUE,
+                      status = "primary",
+                      title = "Dygraph Time Series",
+                      
+                      dygraphs::dygraphOutput(outputId = "dygraph_time") %>%
+                        shinycssloaders::withSpinner(type = 7)
+                  )
                 )
               ),
               tabItem(
@@ -83,7 +101,9 @@ ui_body <- dashboardBody(
                   box(width = 12,
                       div(shinyWidgets::radioGroupButtons(inputId = "radio_input",
                                                           width = "50%",
-                                                          choices = c("Option 1", "Option 2", "Option 3")
+                                                          status = "primary",
+                                                          choices = c("Option 1", "Option 2", "Option 3"),
+                                                          checkIcon = list(yes = icon("dot-circle-o"), no = icon("circle-o"))
                       ))
                   ),
                   
