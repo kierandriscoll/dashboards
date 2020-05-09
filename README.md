@@ -69,7 +69,7 @@ dashboardSidebar(
  )
 )
 ```
-sidebarMenu() creates a empty html list <ul> and the menuItem() add elements <li> to it. E.g: 
+sidebarMenu() creates a empty html list `<ul>` and the menuItem() add elements `<li>` to it. E.g: 
 ```html
 <ul class="sidebar-menu">
   <li>
@@ -95,7 +95,7 @@ tabItems(tabItem(tabName = "item1"),
          tabItem(tabName = "item2"))
 # tabNames those used when creating the sidebar
 ```
-In html this geneartes:
+In html this generates:
 ```html
 <div class="tab-content">
   <div role="tabpanel" class="tab-pane" id="shiny-tab-item1"></div>
@@ -125,7 +125,7 @@ tabItem(
   ) 
 )
 ```
-Each fluidRow() creates a <div class="row">. Each box() genartes another <div> that uses the bootstrap grid system to determine its width. It may also generate further nested <div> for box title headers and body content.  
+Each fluidRow() creates a `<div class="row">`. Each box() generates another `<div>` that uses the bootstrap grid system to determine its width. It may also generate further nested `<div>` for box title headers and body content.  
 ```html
 <div role="tabpanel" class="tab-pane" id="shiny-tab-item1">
   
@@ -165,7 +165,7 @@ selectInput(inputId = "select",
             choices=c("France","Germany","USA","China","Japan"), 
             selected="")
 ```
-Generates a html <div> containing a <select> element:
+Generates a html `<div>` containing a `<select>` element:
 ```html
 <div class="form-group shiny-input-container">
   <label class="control-label" for="select">Preset dates</label>
@@ -180,7 +180,7 @@ Generates a html <div> containing a <select> element:
   </div>
 </div>
 ```
-In R selectInput() uses **selectize.js** by default (hence the addition of the <script> line). R keeps track of any extra javascript libraries that are used and adds them to the <head>.
+In R selectInput() uses **selectize.js** by default (hence the addition of the `<script>` line). R keeps track of any extra javascript libraries that are used and adds them to the <head>.
 
 ```r
 dateRangeInput(inputId = "date_range",
@@ -190,7 +190,7 @@ dateRangeInput(inputId = "date_range",
                format = "dd-M-yyyy",
                separator = " to ")
 ```
-Generates a html <div> containing a date <input> element:
+Generates a html `<div>` containing a date `<input>` element:
 ```html
 <div id="date_range" class="shiny-date-range-input form-group shiny-input-container">
   <label class="control-label" for="date_range">Date range:</label>
