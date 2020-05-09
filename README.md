@@ -49,7 +49,7 @@ Most shiny functions generate html code:
 ```
 
 ## dashboardHeader()
-The function has arguments dashboardHeader(title = "Custom Title", disable=TRUE) these amend the basic html, eg.:
+The function has arguments `dashboardHeader(title = "Custom Title", disable=TRUE)` these amend the basic html, eg.:
 ```html
 <header class="main-header" style="display: none;">
   <span class="logo">Custom Title</span>
@@ -69,7 +69,7 @@ dashboardSidebar(
  )
 )
 ```
-sidebarMenu() creates a empty html list `<ul>` and the menuItem() add elements `<li>` to it. E.g: 
+`sidebarMenu()` creates a empty html list `<ul>` and the menuItem() add elements `<li>` to it. E.g: 
 ```html
 <ul class="sidebar-menu">
   <li>
@@ -125,7 +125,7 @@ tabItem(
   ) 
 )
 ```
-Each fluidRow() creates a `<div class="row">`. Each box() generates another `<div>` that uses the bootstrap grid system to determine its width. It may also generate further nested `<div>` for box title headers and body content.  
+Each `fluidRow()` creates a `<div class="row">`. Each `box()` generates another `<div>` that uses the bootstrap grid system to determine its width. It may also generate further nested `<div>` for box title headers and body content.  
 ```html
 <div role="tabpanel" class="tab-pane" id="shiny-tab-item1">
   
@@ -180,7 +180,7 @@ Generates a html `<div>` containing a `<select>` element:
   </div>
 </div>
 ```
-In R selectInput() uses **selectize.js** by default (hence the addition of the `<script>` line). R keeps track of any extra javascript libraries that are used and adds them to the <head>.
+In R `selectInput()` uses **selectize.js** by default (hence the addition of the `<script>` line). R keeps track of any extra javascript libraries that are used and adds them to the <head>.
 
 ```r
 dateRangeInput(inputId = "date_range",
