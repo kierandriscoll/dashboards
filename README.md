@@ -48,7 +48,7 @@ Most shiny functions generate html code:
 </body>    
 ```
 
-# dashboardHeader()
+## dashboardHeader()
 The function has arguments dashboardHeader(title = "Custom Title", disable=TRUE) these amend the basic html, eg.:
 ```html
 <header class="main-header" style="display: none;">
@@ -56,7 +56,7 @@ The function has arguments dashboardHeader(title = "Custom Title", disable=TRUE)
   ...
 ```
 
-# dashboardSidebar()
+## dashboardSidebar()
 A sidebar will normally contain a menu. The basic R code for this is involves nesting other functions:
 ```r
 dashboardSidebar(
@@ -157,7 +157,7 @@ Each fluidRow() creates a <div class="row">. Each box() genartes another <div> t
 ```
 
 
-# User inputs
+## User inputs
 User input boxes may appear in the dashboard sidebar or body. Eg:
 ```r
 selectInput(inputId = "select",
