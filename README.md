@@ -1,10 +1,10 @@
 # Shiny Dashboards
-shinydashboard (v0.1) uses CSS from the [AdminLTE template](https://adminlte.io/themes/AdminLTE/documentation/index.html) which is based on [Bootstrap v3](https://getbootstrap.com/docs/3.4/)
+shinydashboard (v0.1) mainly uses CSS from the [AdminLTE template](https://adminlte.io/themes/AdminLTE/documentation/index.html) which is built around [Bootstrap v3](https://getbootstrap.com/docs/3.4/)
 
 ## User Interface
 A shiny dashboard UI consists of a header, sidebar and body:
 ```r
-ui_header <- dashboardHeader(title = "Basic dashboard")
+ui_header <- dashboardHeader()
 ui_sidebar <- dashboardSidebar()
 ui_body <- dashboardBody()
 ui <- dashboardPage(ui_header, ui_sidebar, ui_body)
@@ -39,7 +39,7 @@ Most shiny functions generate html code:
   <section class="content"></section>
 </div> generates:
 ```
-**dashboardPage()** wraps the components these components in:
+**dashboardPage()** wraps the components:
 ```html
 <body class="skin-blue" style="min-height: 611px;">	
   <div class="wrapper">
@@ -48,111 +48,156 @@ Most shiny functions generate html code:
 </body>    
 ```
 
+# dashboardHeader()
+The function has arguments dashboardHeader(title = "Custom Title", disable=TRUE) these amend the basic html, eg.:
+```html
+<header class="main-header" style="display: none;">
+  <span class="logo">Custom Title</span>
+  ...
+```
+
+# dashboardSidebar()
+A sidebar will normally contain a menu. The basic R code for this is involves nesting other functions:
 ```r
-ui_header <- dashboardHeader(title = "Basic dashboard")
+dashboardSidebar(
+  sidebarMenu(
+    id = "sidebar_menu",
+    menuItem("Page1", tabName = "item1"),
+    menuItem("Page2", tabName = "item2"),
+    menuItem("Page3", tabName = "item3"),
+    menuItem("Page4", tabName = "item4")
+ )
+)
+```
+sidebarMenu() creates a empty html list <ul> and the menuItem() add elements <li> to it. E.g: 
+```html
+<ul class="sidebar-menu">
+  <li>
+    <a href="#shiny-tab-item1" data-toggle="tab" data-value="item1">
+      <span>Page1</span>
+    </a>
+  </li>
+  <li>
+    <a href="#shiny-tab-item2" data-toggle="tab" data-value="item2">
+      <span>Page2</span>
+    </a>
+  </li>
+  <div id="sidebar_menu" class="sidebarMenuSelectedTabItem" data-value="null"></div>
+</ul>
+```
 
-ui_sidebar <- dashboardSidebar(
-                sidebarMenu(id = "sidebar_menu",
-                            menuItem("Charts", tabName = "Plotly", icon = icon("star")),
-                            menuItem("Tables", tabName = "DataTable", icon = icon("dashboard")),
-                            menuItem("Maps", tabName = "Maps", icon = icon("cloud")),
-                            menuItem("All", tabName = "Together", icon = icon("users"))
-                ),
-                
-                dateRangeInput(inputId = "date_range",
-                               "Date range:",
-                               start= "2019-01-01",
-                               end = "2019-03-31",
-                               format = "dd-M-yyyy",
-                               separator = " to ")
-              )
+
   
-ui_body <- dashboardBody(
-            tabItems(
-              tabItem(
-                tabName = "Plotly",
-                fluidRow(
-                  box(width = 6,
-                      solidHeader = TRUE,
-                      status = "primary",
-                      title = "Plotly Scatter",
-                             
-                      div(style ="font-size: 16px; font-weight: bold; text-align: center;",
-                      HTML("Lorem ipsum dolor sit amet")),
-                             
-                      plotly::plotlyOutput(outputId = "plotly_line") %>%
-                      shinycssloaders::withSpinner(type = 7),
-                             
-                      uiOutput(outputId = "plotly_select")
-                  ),
-              
-                  box(width = 6,
-                      solidHeader = TRUE,
-                      status = "primary",
-                      title = "Plotly Time Series",
-                            
-                      plotly::plotlyOutput(outputId = "plotly_time") %>%
-                      shinycssloaders::withSpinner(type = 7)
-                  )
-                ),
-                fluidRow(
-                  box(width = 6,
-                      solidHeader = TRUE,
-                      status = "primary"
-                      
-                  ),
-                  
-                  box(width = 6,
-                      solidHeader = TRUE,
-                      status = "primary",
-                      title = "Dygraph Time Series",
-                      
-                      dygraphs::dygraphOutput(outputId = "dygraph_time") %>%
-                        shinycssloaders::withSpinner(type = 7)
-                  )
-                )
-              ),
-              tabItem(
-                tabName = "DataTable",
-                h2("DataTable"),
-                fluidRow(
-                  box(width = 8,
-                      DT::DTOutput(outputId = "data_table")),
-                  
-                  box(width = 4,
-                      uiOutput(outputId = "text_data_table"))
-                )  
-              ),
-              tabItem(
-                tabName = "Maps",
-                h2("Maps"),
-                fluidRow(box(width = 12))
-              ),
-              tabItem(
-                tabName = "Together",
-                h2("All Together"),
-                fluidRow(
-                  box(width = 12,
-                      div(shinyWidgets::radioGroupButtons(inputId = "radio_input",
-                                                          width = "50%",
-                                                          status = "primary",
-                                                          choices = c("Option 1", "Option 2", "Option 3"),
-                                                          checkIcon = list(yes = icon("dot-circle-o"), no = icon("circle-o"))
-                      ))
-                  ),
-                  
-                  box(width = 12,
-                      solidHeader = TRUE,
-                      status = "primary",
-                      title = "Plotly Bar",
-                      
-                      plotly::plotlyOutput(outputId = "plotly_bar") %>%
-                        shinycssloaders::withSpinner(type = 7)
-                  )
-                )
-              )
-            )
-          )
+## dashboardBody()
+If your dashbaorad has multiple tabs the the basic dashbaoard body strcuture will look like:
+```r
+tabItems(tabItem(tabName = "item1"),
+         tabItem(tabName = "item2"))
+# tabNames those used when creating the sidebar
+```
+In html this geneartes:
+```html
+<div class="tab-content">
+  <div role="tabpanel" class="tab-pane" id="shiny-tab-item1"></div>
+  <div role="tabpanel" class="tab-pane" id="shiny-tab-item2"></div>
+</div>
+```
+Within each tab, the content are displayed using fluidrows and boxes:
+```r
+tabItem(
+  tabName = "item1",
+  fluidRow(
+    box(width = 6,
+        solidHeader = TRUE,
+        status = "primary"
+        # Text or Outputs here
+    ),     
+    box(width = 6,
+        solidHeader = TRUE,
+        status = "primary",
+        title = "Time Series"
+        # Text or Outputs here
+    )
+  ),
+  fluidRow(
+    box(width = 12)
+    # Text or Outputs here
+  ) 
+)
+```
+Each fluidRow() creates a <div class="row">. Each box() genartes another <div> that uses the bootstrap grid system to determine its width. It may also generate further nested <div> for box title headers and body content.  
+```html
+<div role="tabpanel" class="tab-pane" id="shiny-tab-item1">
+  
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="box box-solid box-primary">
+        <div class="box-body"></div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="box box-solid box-primary">
+        <div class="box-header">
+          <h3 class="box-title">Dygraph Time Series</h3>
+        </div>
+        <div class="box-body"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="box">
+        <div class="box-body"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+```
 
 
-ui <- dashboardPage(skin = "green", ui_header, ui_sidebar, ui_body, useShinyjs())
+# User inputs
+User input boxes may appear in the dashboard sidebar or body. Eg:
+```r
+selectInput(inputId = "select",
+            "Preset dates", 
+            choices=c("France","Germany","USA","China","Japan"), 
+            selected="")
+```
+Generates a html <div> containing a <select> element:
+```html
+<div class="form-group shiny-input-container">
+  <label class="control-label" for="select">Preset dates</label>
+  <div>
+    <select id="select">
+      <option value="France">France</option>
+      <option value="Germany">Germany</option>
+      <option value="USA">USA</option>
+      <option value="China">China</option>
+      <option value="Japan">Japan</option></select>
+    <script type="application/json" data-for="select" data-nonempty="">{}</script>
+  </div>
+</div>
+```
+In R selectInput() uses **selectize.js** by default (hence the addition of the <script> line). R keeps track of any extra javascript libraries that are used and adds them to the <head>.
+
+```r
+dateRangeInput(inputId = "date_range",
+               "Date range:",
+               start= "2019-01-01",
+               end = "2019-03-31",
+               format = "dd-M-yyyy",
+               separator = " to ")
+```
+Generates a html <div> containing a date <input> element:
+```html
+<div id="date_range" class="shiny-date-range-input form-group shiny-input-container">
+  <label class="control-label" for="date_range">Date range:</label>
+  <div class="input-daterange input-group">
+    <input class="input-sm form-control" type="text" data-date-language="en" data-date-week-start="0" data-date-format="dd-M-yyyy" data-date-start-view="month" data-initial-date="2019-01-01" data-date-autoclose="true"/>
+    <span class="input-group-addon"> to </span>
+    <input class="input-sm form-control" type="text" data-date-language="en" data-date-week-start="0" data-date-format="dd-M-yyyy" data-date-start-view="month" data-initial-date="2019-03-31" data-date-autoclose="true"/>
+  </div>
+</div>
+```
